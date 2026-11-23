@@ -16,7 +16,11 @@ app.post("/api/data", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello, from SamNet Server!");
+  res.json({
+    message: "Welcome to the API",
+    status: "success",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 app.listen(3000, () => {
