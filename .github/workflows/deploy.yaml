@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-vultr
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,14 +16,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: deploy via ssh
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VULTR_HOST }}
           username: root
           key: ${{ secrets.VULTR_PRIVATE_KEY }}
           script: |
+            set -eu
             cd /root/node-cicd-deployment
-            git pull origin main
-            docker-compose down
-            docker-compose up -d --build
+            git pull --ff-only origin main
+            docker compose up -d --build
